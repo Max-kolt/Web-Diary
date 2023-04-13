@@ -1,0 +1,12 @@
+{% extends 'MainLayout.html' %}
+
+{% block content %}
+    <h1>{{title}}</h1>
+    <div class="line_list">
+    {% for group in groups %}
+        <a href="{% url 'subjects' group.pk %}">
+            <button type="button" class="btn btn-primary">{{group.number}}</button>
+        </a>
+    {% endfor %}
+    </div>
+{% endblock %}

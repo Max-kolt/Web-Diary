@@ -1,0 +1,40 @@
+{% extends 'MainLayout.html' %} {% block content %}
+<h1>{{title}}</h1>
+<div class="scroll_table">
+  <table class="table-bordered">
+    <tr>
+      <th class="first_column">Students</th>
+      {% for l in lessons %}
+      <td class="mark_column">{{ l.date|date:"d.m" }}</td>
+      {% endfor %}
+    </tr>
+    {% for stud in estimate_matrix %}
+    <tr id="{{stud.stud_id}}">
+      <th class="first_column">{{stud.stud_name}}</th>
+      {% for mark in stud.estimates %}
+      <td id="{{ mark.date|date:'Y-m-d' }}" class="mark_column">
+        {% if mark.mark != None %}
+        <input
+          name="mark"
+          class="mark_input"
+          type="text"
+          maxlength="1"
+          value="{{mark.mark}}"
+        />
+        {% else %}
+        <input name="mark" class="mark_input" type="text" maxlength="1" />
+        {% endif %}
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="line_list">
+  <button id="saveBtn" type="button" class="btn btn-primary">Сохранить</button>
+
+  <a href="{% url 'add_post' group_id=group_id subj_slug=subj_slug %}">
+    <button type="button" class="btn btn-primary">Добавить тему</button>
+  </a>
+</div>
+{% endblock %}

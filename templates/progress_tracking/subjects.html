@@ -1,0 +1,17 @@
+{% extends 'MainLayout.html' %}
+
+{% block content %}
+    <h1>{{title}}</h1>
+    <div class="line_list">
+    {% for subj in subjects %}
+        <a href="{% url 'estimates' group_id=group_id subj_slug=subj.subject_ID.slug %}">
+            <button type="button" class="btn btn-primary">
+                {% if subj.subject_ID.MDK != null %}
+                    {{subj.subject_ID.MDK}}
+                {% endif %}
+                {{subj.subject_ID.name}}
+            </button>
+        </a>
+    {% endfor %}
+    </div>
+{% endblock %}

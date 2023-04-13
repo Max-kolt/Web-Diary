@@ -1,0 +1,32 @@
+.line_list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.main_layout {
+  padding: 0px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+.first_column {
+  width: 250px;
+  height: 2rem;
+  font-size: 14px;
+  display: inline-block;
+  overflow: scroll;
+  white-space: nowrap;
+  background-color: #fff;
+}
+.scroll_table {
+  overflow: scroll;
+  width: 100%;
+}
+.mark_column {
+  width: 60px;
+}
+
+.mark_input {
+  width: 100%;
+}
