@@ -4,12 +4,15 @@ from .views import *
 urlpatterns = [
     path('', home, name='home'),
     path('groups/', show_groups, name='groups'),
-    path('groups/<int:group_id>/', show_group_subjects, name='subjects'),
-    path('groups/<int:group_id>/<slug:subj_slug>', show_group_estimates, name='estimates'),
-    path('groups/<int:group_id>/<slug:subj_slug>/save', save_estmimates, name='save_estmimates'),
-    path('groups/<int:group_id>/<slug:subj_slug>/add_topic', add_post_form, name='add_post'),
+    path('<int:group_id>/', show_group_subjects, name='subjects'),
+    path('<int:group_id>/<slug:subj_slug>', show_group_estimates, name='estimates'),
+    path('<int:group_id>/<slug:subj_slug>/save', save_estmimates, name='save_estmimates'),
+
+    # path('', ),
+
     path('logout/', logout, name='logout'),
     path('events/', events, name='events'),
+    path('event/<int:event_id>', current_event, name='event')
 ]
 
 

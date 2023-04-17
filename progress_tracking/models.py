@@ -1,11 +1,13 @@
+from datetime import datetime
+
 from django.db import models
 from django.urls import reverse
 
 
 class Students(models.Model):
-    fname = models.CharField(max_length=50)
-    lname = models.CharField(max_length=50)
-    mname = models.CharField(max_length=50)
+    fname = models.CharField(max_length=50, verbose_name='Имя')
+    lname = models.CharField(max_length=50, verbose_name='Фамилия')
+    mname = models.CharField(max_length=50, verbose_name='Отчество')
     group = models.ForeignKey('Groups', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -16,8 +18,8 @@ class Students(models.Model):
 
 
 class Groups(models.Model):
-    number = models.IntegerField()
-    specialization = models.ForeignKey('Specializations', on_delete=models.PROTECT)
+    number = models.IntegerField(verbose_name='Группа')
+    specialization = models.ForeignKey('Specializations', on_delete=models.PROTECT, verbose_name='Специализация')
 
     def __str__(self):
         return f'{self.number}'
@@ -27,8 +29,8 @@ class Groups(models.Model):
 
 
 class Specializations(models.Model):
-    name = models.CharField(max_length=255)
-    number = models.CharField(max_length=12)
+    name = models.CharField(max_length=255, verbose_name='Название')
+    number = models.CharField(max_length=12, verbose_name='Номер')
 
     def __str__(self):
         return self.name
@@ -36,7 +38,7 @@ class Specializations(models.Model):
 
 class SubjectLessons(models.Model):
     subject_ID = models.ForeignKey('GroupSubjects', on_delete=models.CASCADE, verbose_name='Предмет')
-    date = models.DateField(verbose_name='Дата')
+    date = models.DateField(verbose_name='Дата', default=datetime.now())
     topic = models.CharField(max_length=255, null=True, verbose_name='Тема')
 
     def __str__(self):
@@ -65,8 +67,8 @@ class StudentEstimates(models.Model):
 
 
 class Subjects(models.Model):
-    name = models.CharField(max_length=255)
-    MDK = models.CharField(max_length=6, null=True)
+    name = models.CharField(max_length=255, verbose_name='Название')
+    MDK = models.CharField(max_length=6, null=True, verbose_name='МДК')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL', null=True)
 
     def __str__(self):
@@ -77,19 +79,19 @@ class Subjects(models.Model):
 
 
 class GroupSubjects(models.Model):
-    subject_ID = models.ForeignKey('Subjects', on_delete=models.PROTECT)
-    group = models.ForeignKey('Groups', on_delete=models.CASCADE)
-    teacher = models.ForeignKey('Teachers', null=True, on_delete=models.SET_NULL)
-    hours = models.IntegerField()
+    subject_ID = models.ForeignKey('Subjects', on_delete=models.PROTECT, verbose_name='Предмет')
+    group = models.ForeignKey('Groups', on_delete=models.CASCADE, verbose_name='Группа')
+    teacher = models.ForeignKey('Teachers', null=True, on_delete=models.SET_NULL, verbose_name='Преподаватель')
+    hours = models.IntegerField(verbose_name='Часы')
 
     def __str__(self):
         return f'{self.group} {self.subject_ID}'
 
 
 class Teachers(models.Model):
-    fname = models.CharField(max_length=50)
-    lname = models.CharField(max_length=50)
-    mname = models.CharField(max_length=50)
+    fname = models.CharField(max_length=50, verbose_name='Имя')
+    lname = models.CharField(max_length=50, verbose_name='Фамилия')
+    mname = models.CharField(max_length=50, verbose_name='Отчество')
 
     def __str__(self):
         return f'{self.fname} {self.lname}'
@@ -99,9 +101,9 @@ class Teachers(models.Model):
 
 
 class StudyEvents(models.Model):
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    photos = models.ImageField(upload_to='photos/%Y/%m/%d/', null=True)
+    name = models.CharField(max_length=255, verbose_name='Название')
+    description = models.TextField(blank=True, verbose_name='Описание')
+    photos = models.ImageField(upload_to='photos/%Y/%m/%d/', null=True, verbose_name='Фото')
     time_create = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -113,8 +115,8 @@ class StudyEvents(models.Model):
 
 class EventResults(models.Model):
     event_ID = models.ForeignKey('StudyEvents', on_delete=models.CASCADE)
-    student_ID = models.ForeignKey('Students', null=True, on_delete=models.SET_NULL)
-    result = models.CharField(max_length=255)
+    student_ID = models.ForeignKey('Students', null=True, on_delete=models.SET_NULL, verbose_name='Студент')
+    result = models.CharField(max_length=255, verbose_name='Достижение')
 
     def __str__(self):
         return f'{self.student_ID} {self.event_ID} {self.result}'

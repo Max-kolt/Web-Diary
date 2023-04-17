@@ -3,12 +3,21 @@
   flex-wrap: wrap;
   gap: 10px;
 }
+.overflow {
+  overflow: scroll;
+  display: flex;
+  padding-left: 30px;
+  gap: 40px;
+}
 .main_layout {
   padding: 0px 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1rem;
+  gap: 2rem;
+}
+.container {
+  gap: 2rem;
 }
 .first_column {
   width: 250px;

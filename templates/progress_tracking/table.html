@@ -1,11 +1,16 @@
-{% extends 'MainLayout.html' %} {% block content %}
+{% extends 'MainLayout.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
 <h1>{{title}}</h1>
 <div class="scroll_table">
   <table class="table-bordered">
     <tr>
       <th class="first_column">Students</th>
       {% for l in lessons %}
-      <td class="mark_column">{{ l.date|date:"d.m" }}</td>
+        <td class="mark_column">
+          <a href='#{{l.date|date:"d.m"}}'>{{ l.date|date:"d.m" }}</a>
+        </td>
       {% endfor %}
     </tr>
     {% for stud in estimate_matrix %}
@@ -30,11 +35,57 @@
     {% endfor %}
   </table>
 </div>
+</div>
+<div class="container">
 <div class="line_list">
   <button id="saveBtn" type="button" class="btn btn-primary">Сохранить</button>
-
-  <a href="{% url 'add_post' group_id=group_id subj_slug=subj_slug %}">
-    <button type="button" class="btn btn-primary">Добавить тему</button>
-  </a>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#topicModal">Добавить тему</button>
 </div>
+  </div>
+
+
+<div class="container">
+  <h1>Темы</h1>
+  <table>
+  {% for les in lessons %}
+    <tr>
+      <th id='{{les.date|date:"d.m"}}'>{{les.date|date:"d.m.y"}}:</th>
+      <td>{{les.topic}}</td>
+    </tr>
+  {% endfor %}
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="topicModal" tabindex="-1" aria-labelledby="topicModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="topicModalLabel">Добавить тему</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="post" action="{% url 'estimates' group_id subj_slug %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          {% for f in form %}
+            <div class="mb-3">
+              <label for="{{ f.id_for_label }}" class="col-form-label">{{f.label}}</label>
+              {{ f }}
+            </div>
+            <div style="color: red;"> {{ f.errors }} </div>
+          {% endfor %}
+          <div style="color: red;"> {{ form.non_field_errors }} </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+          <button type="submit" class="btn btn-primary">Добавить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'progress_tracking/js/InputMarkController.js' %}"></script>
 {% endblock %}
