@@ -2,8 +2,11 @@
 
 {% block content %}
     <div class="container">
-        <h1>События</h1>
-        <div class="overflow">
+        <div class="line_list">
+            <h1>События</h1>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#eventModal">Добавить событие</button>
+        </div>
+        <div class="line_list">
             {% for event in events %}
 
             <div class="card" style="width: 18rem; height: 376px;">
@@ -17,4 +20,33 @@
             {% endfor %}
         </div>
     </div>
+
+<!-- Modal -->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="topicModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="topicModalLabel">Добавить событие</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="post" action="{% url 'events' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body">
+          {% for f in form %}
+            <div class="mb-3">
+              <label for="{{ f.id_for_label }}" class="col-form-label">{{f.label}}</label>
+              {{ f }}
+            </div>
+            <div style="color: red;"> {{ f.errors }} </div>
+          {% endfor %}
+          <div style="color: red;"> {{ form.non_field_errors }} </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+          <button type="submit" class="btn btn-primary">Добавить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 {% endblock %}

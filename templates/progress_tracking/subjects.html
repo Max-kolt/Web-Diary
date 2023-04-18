@@ -1,7 +1,8 @@
 {% extends 'MainLayout.html' %}
 
 {% block content %}
-    <h1>{{title}}</h1>
+<div class="container">
+    <h1>Выберите предмет</h1>
     <div class="line_list">
     {% for subj in subjects %}
         <a href="{% url 'estimates' group_id=group_id subj_slug=subj.subject_ID.slug %}">
@@ -14,4 +15,20 @@
         </a>
     {% endfor %}
     </div>
+
+
+</div>
+<div class="container">
+    <h2>Студенты</h2>
+    <div class="container">
+        <table class="table-bordered">
+            {% for i, stud in students %}
+            <tr>
+                <td>{{ i }}</td>
+                <th>{{ stud }}</th>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
 {% endblock %}

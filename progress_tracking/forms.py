@@ -2,10 +2,10 @@ from django import forms
 from .models import *
 
 
-class StudentsForm(forms.Form):
+class StudentsForm(forms.ModelForm):
     class Meta:
         model = Students
-        fields = ['fname', 'lname', 'mname']
+        fields = ['fname', 'lname', 'mname', 'group']
 
 
 class LessonsForm(forms.ModelForm):
@@ -14,13 +14,20 @@ class LessonsForm(forms.ModelForm):
         fields = ['topic']
 
 
-class GroupsForm(forms.Form):
+class GroupsForm(forms.ModelForm):
     class Meta:
         model = Groups
-        fields = '__all__'
+        fields = ['number', 'specialization']
+        widgets = { 'specialization': forms.Select(attrs={'style': 'width: 100%'}) }
 
 
-class TeachersForm(forms.Form):
+class TeachersForm(forms.ModelForm):
     class Meta:
         model = Teachers
-        fields = '__all__'
+        fields = ['fname', 'lname', 'mname']
+
+
+class EventsForm(forms.ModelForm):
+    class Meta:
+        model = StudyEvents
+        fields = ['name', 'description', 'photos']

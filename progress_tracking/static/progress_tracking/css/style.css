@@ -1,5 +1,6 @@
 .line_list {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -15,9 +16,12 @@
   flex-direction: column;
   justify-content: center;
   gap: 2rem;
+  min-height: 760px;
 }
 .container {
-  gap: 2rem;
+  display:flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 .first_column {
   width: 250px;

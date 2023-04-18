@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as django_logout
-from .models import *
 from .forms import *
+from .methods import generate_table_by_stud_lessons
 
 main_menu = [
     {'title': 'Dairy', 'url_path': 'groups'},
@@ -15,7 +15,7 @@ main_menu = [
 
 def home(request):
     groups = Groups.objects.order_by('-pk')[0:5]
-    events = StudyEvents.objects.order_by('-pk')[0:5]
+    events = StudyEvents.objects.order_by('-pk')[0:3]
     return render(
         request,
         'index.html',
@@ -29,11 +29,24 @@ def home(request):
 
 
 def show_groups(request):
-    all_groups = Groups.objects.all()
+    if request.method == 'POST':
+        form = GroupsForm(request.POST)
+        if form.is_valid():
+            new_group = form.save(commit=False)
+            try:
+                Groups.objects.get(number=new_group.number)
+            except:
+                form.save()
+            return redirect('/groups')
+    else:
+        form = GroupsForm()
+
+    all_groups = Groups.objects.order_by('number')
     context = {
         'menu': main_menu,
         'title': 'Выберите группу',
-        'groups': all_groups
+        'groups': all_groups,
+        'form': form
     }
 
     return render(
@@ -44,12 +57,16 @@ def show_groups(request):
 
 
 def show_group_subjects(request, group_id):
+    if request.method == 'POST':
+        pass
+
     group_subjects = GroupSubjects.objects.filter(group=group_id)
+    students = Students.objects.filter(group=group_id)
 
     context = {
         'menu': main_menu,
-        'title': 'Выберите предмет',
         'subjects': group_subjects,
+        'students': enumerate(students),
         'group_id': group_id
     }
     return render(
@@ -59,35 +76,31 @@ def show_group_subjects(request, group_id):
     )
 
 
+def new_student(request, group_id):
+    pass
+
 def show_group_estimates(request, group_id, subj_slug):
     students = Students.objects.filter(group=group_id)
     subj = Subjects.objects.get(slug=subj_slug)
-    subject_for_group = GroupSubjects.objects.get(subject_ID=subj.id)
+    subject_for_group = GroupSubjects.objects.get(group=group_id, subject_ID=subj.id)
 
     if request.method == 'POST':
-        print(request.POST)
         form = LessonsForm(request.POST)
         if form.is_valid():
             lesson = form.save(commit=False)
-            lesson.subject_ID = subject_for_group
-            lesson.save()
-            return redirect(f'/{group_id}/{subj_slug}')
+            try:
+                verify = SubjectLessons.objects.get(subject_ID=subject_for_group.pk, date=lesson.date)
+                print(datetime.now(), lesson.date)
+                form.add_error(None, 'Запись уже существует')
+            except Exception:
+                lesson.subject_ID = subject_for_group
+                lesson.save()
+                return redirect(f'/{group_id}/{subj_slug}')
     else:
         form = LessonsForm()
 
     lessons = SubjectLessons.objects.filter(subject_ID=subject_for_group.pk)
-
-    table_matrix = []
-    for stud in students:
-        current_student = {'stud_name': f'{stud.lname} {stud.fname} {stud.mname}', 'stud_id': stud.pk, 'estimates': []}
-        for lesson in lessons:
-            stud_lesson = StudentEstimates.objects.filter(lesson_ID=lesson.pk)
-            try:
-                stud_mark = stud_lesson.get(student_ID=stud.pk)
-                current_student['estimates'].append({'date': lesson.date, 'mark': stud_mark.mark})
-            except Exception:
-                current_student['estimates'].append({'date': lesson.date, 'mark': None})
-        table_matrix.append(current_student)
+    table_matrix = generate_table_by_stud_lessons(students, lessons)
 
     context = {
         'menu': main_menu,
@@ -141,18 +154,23 @@ def save_estmimates(request, group_id, subj_slug):
     return JsonResponse(response)
 
 
-def add_topic_form(request, group_id, subj_slug):
-    pass
-
-
 def events(request):
-    events = StudyEvents.objects.all()
+    if request.method == 'POST':
+        form = EventsForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('events')
+    else:
+        form = EventsForm()
+
+    all_events = StudyEvents.objects.all()
     return render(
         request,
         'progress_tracking/events.html',
         {
             'menu': main_menu,
-            'events': events
+            'events': all_events,
+            'form': form
         }
     )
 

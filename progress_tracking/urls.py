@@ -7,13 +7,12 @@ urlpatterns = [
     path('<int:group_id>/', show_group_subjects, name='subjects'),
     path('<int:group_id>/<slug:subj_slug>', show_group_estimates, name='estimates'),
     path('<int:group_id>/<slug:subj_slug>/save', save_estmimates, name='save_estmimates'),
+    path('<int:group_id>/new_stud', new_student, name='new_stud'),
 
-    # path('', ),
-
+    #path('', ),
     path('logout/', logout, name='logout'),
+
     path('events/', events, name='events'),
     path('event/<int:event_id>', current_event, name='event')
 ]
 
-
-# Разработать техническое задание на программное обеспечивание с учетом изученных стандартов, учебник Гагариной Технологии разработки программного обеспечивания по вариантам

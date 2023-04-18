@@ -9,4 +9,35 @@
         </a>
     {% endfor %}
     </div>
+<div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#groupModal" data-bs-whatever="@getbootstrap">Добавить группу</button>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="groupModal" tabindex="-1" aria-labelledby="groupModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="groupModalLabel">Добавить группу</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <form method="post" action="{% url 'groups' %}">
+            {% csrf_token %}
+      <div class="modal-body">
+          {% for f in form %}
+            <div class="mb-3">
+              <label for="{{ f.id_for_label }}" class="col-form-label">{{f.label}}</label>
+              {{ f }}
+            </div>
+            <div style="color: red;"> {{ f.errors }} </div>
+          {% endfor %}
+          <div style="color: red;"> {{ form.non_field_errors }} </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="submit" class="btn btn-primary">Создать группу</button>
+      </div>
+        </form>
+    </div>
+  </div>
+</div>
 {% endblock %}
